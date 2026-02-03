@@ -411,8 +411,7 @@ class SLSMemoryClient:
         user_id: Optional[str] = None,
         agent_id: Optional[str] = None,
         app_id: Optional[str] = None,
-        run_id: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        run_id: Optional[str] = None
     ) -> Dict[str, Any]:
         """Delete all memories with optional filtering.
 
@@ -438,7 +437,6 @@ class SLSMemoryClient:
             agent_id=agent_id,
             app_id=app_id,
             run_id=run_id,
-            metadata=metadata,
         )
 
         response = self._client.delete_memories(
