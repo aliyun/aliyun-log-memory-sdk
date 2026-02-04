@@ -73,8 +73,7 @@ client.add(messages, user_id=None, agent_id=None, app_id=None,
 #### search() - 搜索记忆
 
 ```python
-client.search(query, user_id=None, agent_id=None, top_k=None, 
-             rerank=False, metadata=None)
+client.search(query, user_id=None, agent_id=None, top_k=None, rerank=False)
 ```
 
 **参数：**
@@ -82,9 +81,8 @@ client.search(query, user_id=None, agent_id=None, top_k=None,
 - `user_id` (str): 过滤用户 ID
 - `top_k` (int): 返回结果数量
 - `rerank` (bool): 是否重排序
-- `metadata` (dict): 元数据过滤
 
-**返回：** `{"results": [...], "relations": [...]}`
+**返回：** `{"results": [...]}`
 
 ---
 
@@ -105,7 +103,7 @@ client.get(memory_id)
 
 ```python
 client.get_all(user_id=None, agent_id=None, limit=None, 
-              page=None, page_size=None, metadata=None)
+              page=None, page_size=None)
 ```
 
 **参数：**
@@ -113,9 +111,8 @@ client.get_all(user_id=None, agent_id=None, limit=None,
 - `limit` (int): 最大返回数量
 - `page` (int): 页码
 - `page_size` (int): 每页大小
-- `metadata` (dict): 元数据过滤
 
-**返回：** `{"results": [...], "relations": [...]}`
+**返回：** `{"results": [...]}`
 
 ---
 
@@ -148,13 +145,12 @@ client.delete(memory_id)
 #### delete_all() - 批量删除记忆
 
 ```python
-client.delete_all(user_id=None, agent_id=None, metadata=None)
+client.delete_all(user_id=None, agent_id=None)
 ```
 
 **参数：**
 - `user_id` (str): 过滤用户 ID
 - `agent_id` (str): 过滤 Agent ID
-- `metadata` (dict): 元数据过滤
 
 ⚠️ **警告：** 不带过滤条件将删除所有记忆！
 
