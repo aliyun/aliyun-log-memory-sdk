@@ -124,7 +124,6 @@ class SLSMemoryClient:
         run_id: Optional[str] = None,
         metadata: Optional[Dict[str, Any]] = None,
         infer: bool = True,
-        custom_instructions: Optional[str] = None,
         async_mode: bool = True,
     ) -> Dict[str, Any]:
         """Add a new memory.
@@ -139,7 +138,6 @@ class SLSMemoryClient:
             run_id: The run ID to associate with the memory.
             metadata: Optional metadata to attach to the memory (any key-value pairs).
             infer: Whether to enable inference mode. Defaults to True.
-            custom_instructions: Custom instructions for memory processing.
             async_mode: Whether to process asynchronously. Defaults to True.
 
         Returns:
@@ -165,7 +163,6 @@ class SLSMemoryClient:
             run_id=run_id,
             metadata=metadata,
             infer=infer,
-            custom_instructions=custom_instructions,
             async_mode=async_mode,
         )
 
@@ -213,9 +210,6 @@ class SLSMemoryClient:
         app_id: Optional[str] = None,
         run_id: Optional[str] = None,
         limit: Optional[int] = None,
-        page: Optional[int] = None,
-        page_size: Optional[int] = None,
-        metadata: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Retrieve all memories, with optional filtering.
 
@@ -225,21 +219,12 @@ class SLSMemoryClient:
             app_id: Optional application ID to filter memories.
             run_id: Optional run ID to filter memories.
             limit: Maximum number of memories to retrieve.
-            page: Page number for pagination.
-            page_size: Number of items per page.
-            metadata: Optional metadata filters (key-value pairs).
 
         Returns:
-            A dictionary containing memories in format: {"results": [...], "relations": [...]}
+            A dictionary containing memories in format: {"results": [...]}
 
         Example:
             >>> memories = client.get_all(user_id="user123", limit=10)
-            >>> memories = client.get_all(
-            ...     agent_id="agent_001",
-            ...     page=1,
-            ...     page_size=50,
-            ...     metadata={"source": "chat"}
-            ... )
             >>> for mem in memories["results"]:
             ...     print(mem["memory"])
         """
@@ -249,9 +234,6 @@ class SLSMemoryClient:
             app_id=app_id,
             run_id=run_id,
             limit=limit,
-            page=page,
-            page_size=page_size,
-            metadata=metadata,
         )
 
         response = self._client.get_memories(
@@ -260,12 +242,9 @@ class SLSMemoryClient:
             request,
         )
 
-        result = {"results": [], "relations": []}
-        if response.body:
-            if response.body.results:
-                result["results"] = self._convert_results_list(response.body.results)
-            if response.body.relations:
-                result["relations"] = self._convert_results_list(response.body.relations)
+        result = {"results": []}
+        if response.body and response.body.results:
+            result["results"] = self._convert_results_list(response.body.results)
 
         return result
 
@@ -278,7 +257,6 @@ class SLSMemoryClient:
         run_id: Optional[str] = None,
         top_k: Optional[int] = None,
         rerank: bool = False,
-        metadata: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Search memories based on a query.
 
@@ -290,10 +268,9 @@ class SLSMemoryClient:
             run_id: Optional run ID to filter results.
             top_k: Maximum number of top results to return.
             rerank: Whether to enable reranking. Defaults to False.
-            metadata: Optional metadata filters (key-value pairs).
 
         Returns:
-            A dictionary containing search results in format: {"results": [...], "relations": [...]}
+            A dictionary containing search results in format: {"results": [...]}
 
         Example:
             >>> results = client.search("tennis", user_id="user123", top_k=5)
@@ -301,7 +278,6 @@ class SLSMemoryClient:
             ...     query="preferences",
             ...     agent_id="agent_001",
             ...     rerank=True,
-            ...     metadata={"source": "chat"}
             ... )
             >>> for mem in results["results"]:
             ...     print(f"{mem['memory']} (score: {mem.get('score', 'N/A')})")
@@ -317,7 +293,6 @@ class SLSMemoryClient:
             run_id=run_id,
             top_k=top_k,
             rerank=rerank,
-            metadata=metadata,
         )
 
         response = self._client.search_memories(
@@ -326,12 +301,9 @@ class SLSMemoryClient:
             request,
         )
 
-        result = {"results": [], "relations": []}
-        if response.body:
-            if response.body.results:
+        result = {"results": []}
+        if response.body and response.body.results:
                 result["results"] = self._convert_results_list(response.body.results)
-            if response.body.relations:
-                result["relations"] = self._convert_results_list(response.body.relations)
 
         return result
 
@@ -420,7 +392,6 @@ class SLSMemoryClient:
             agent_id: Optional agent ID to filter which memories to delete.
             app_id: Optional application ID to filter which memories to delete.
             run_id: Optional run ID to filter which memories to delete.
-            metadata: Optional metadata filters (key-value pairs).
 
         Returns:
             A dictionary containing the API response.
@@ -430,7 +401,6 @@ class SLSMemoryClient:
 
         Example:
             >>> client.delete_all(user_id="user123")  # Delete only user123's memories
-            >>> client.delete_all(agent_id="agent_001", metadata={"source": "chat"})
         """
         request = sls_models.DeleteMemoriesRequest(
             user_id=user_id,
@@ -822,9 +792,6 @@ class AsyncSLSMemoryClient:
         app_id: Optional[str] = None,
         run_id: Optional[str] = None,
         limit: Optional[int] = None,
-        page: Optional[int] = None,
-        page_size: Optional[int] = None,
-        metadata: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Retrieve all memories, with optional filtering (async version).
 
@@ -834,12 +801,9 @@ class AsyncSLSMemoryClient:
             app_id: Optional application ID to filter memories.
             run_id: Optional run ID to filter memories.
             limit: Maximum number of memories to retrieve.
-            page: Page number for pagination.
-            page_size: Number of items per page.
-            metadata: Optional metadata filters (key-value pairs).
 
         Returns:
-            A dictionary containing memories in format: {"results": [...], "relations": [...]}
+            A dictionary containing memories in format: {"results": [...]}
         """
         request = sls_models.GetMemoriesRequest(
             user_id=user_id,
@@ -847,9 +811,6 @@ class AsyncSLSMemoryClient:
             app_id=app_id,
             run_id=run_id,
             limit=limit,
-            page=page,
-            page_size=page_size,
-            metadata=metadata,
         )
 
         response = await self._client.get_memories_async(
@@ -858,12 +819,9 @@ class AsyncSLSMemoryClient:
             request,
         )
 
-        result = {"results": [], "relations": []}
-        if response.body:
-            if response.body.results:
-                result["results"] = self._convert_results_list(response.body.results)
-            if response.body.relations:
-                result["relations"] = self._convert_results_list(response.body.relations)
+        result = {"results": []}
+        if response.body and response.body.results:
+            result["results"] = self._convert_results_list(response.body.results)
 
         return result
 
@@ -876,7 +834,6 @@ class AsyncSLSMemoryClient:
         run_id: Optional[str] = None,
         top_k: Optional[int] = None,
         rerank: bool = False,
-        metadata: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Search memories based on a query (async version).
 
@@ -888,10 +845,9 @@ class AsyncSLSMemoryClient:
             run_id: Optional run ID to filter results.
             top_k: Maximum number of top results to return.
             rerank: Whether to enable reranking. Defaults to False.
-            metadata: Optional metadata filters (key-value pairs).
 
         Returns:
-            A dictionary containing search results in format: {"results": [...], "relations": [...]}
+            A dictionary containing search results in format: {"results": [...]}
         """
         if not query:
             raise ValidationError("query is required")
@@ -904,7 +860,6 @@ class AsyncSLSMemoryClient:
             run_id=run_id,
             top_k=top_k,
             rerank=rerank,
-            metadata=metadata,
         )
 
         response = await self._client.search_memories_async(
@@ -913,12 +868,9 @@ class AsyncSLSMemoryClient:
             request,
         )
 
-        result = {"results": [], "relations": []}
-        if response.body:
-            if response.body.results:
-                result["results"] = self._convert_results_list(response.body.results)
-            if response.body.relations:
-                result["relations"] = self._convert_results_list(response.body.relations)
+        result = {"results": []}
+        if response.body and response.body.results:
+            result["results"] = self._convert_results_list(response.body.results)
 
         return result
 
@@ -989,7 +941,6 @@ class AsyncSLSMemoryClient:
         agent_id: Optional[str] = None,
         app_id: Optional[str] = None,
         run_id: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Delete all memories with optional filtering (async version).
 
@@ -998,7 +949,6 @@ class AsyncSLSMemoryClient:
             agent_id: Optional agent ID to filter which memories to delete.
             app_id: Optional application ID to filter which memories to delete.
             run_id: Optional run ID to filter which memories to delete.
-            metadata: Optional metadata filters (key-value pairs).
 
         Returns:
             A dictionary containing the API response.
@@ -1011,7 +961,6 @@ class AsyncSLSMemoryClient:
             agent_id=agent_id,
             app_id=app_id,
             run_id=run_id,
-            metadata=metadata,
         )
 
         response = await self._client.delete_memories_async(
