@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sls-memory"
+dynamic = ["version"]
+authors = [
+    {name = "Zhengqianyi"}
+]
+description = "A mem0-compatible memory SDK powered by Alibaba Cloud SLS"
+readme = "README.md"
+requires-python = ">=3.7"
+license = "MIT"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3 :: Only",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "alibabacloud-sls20201230>=5.12.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/aliyun/aliyun-log-memory-sdk"
+Repository = "https://github.com/aliyun/aliyun-log-memory-sdk"
+Documentation = "https://github.com/aliyun/aliyun-log-memory-sdk/blob/master/usage.md"
+
+[tool.setuptools]
+packages = ["sls_memory"]
+
+[tool.setuptools.dynamic]
+version = {attr = "sls_memory.__version__"}
