@@ -8,7 +8,7 @@ def main():
     config = Config(
         access_key_id=os.getenv("ALIYUN_LOG_ACCESS_KEY_ID"),
         access_key_secret=os.getenv("ALIYUN_LOG_ACCESS_KEY_SECRET"),
-        endpoint=os.getenv("ALIYUN_LOG_ENDPOINT")
+        endpoint="cn-guangzhou.log.aliyuncs.com"
     )
     client = SLSMemoryClient(config, project=os.getenv("ALIYUN_LOG_PROJECT"), memory_store=os.getenv("ALIYUN_LOG_MEMORY_STORE"))
 
@@ -16,7 +16,7 @@ def main():
     result = client.create_memory_store()
     print(result)
 
-    time.sleep(1)
+    time.sleep(60)
 
     # 3. add memory
     result = client.add(

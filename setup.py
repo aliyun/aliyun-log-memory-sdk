@@ -20,7 +20,6 @@ setup(
     ],
     python_requires=">=3.7",
     install_requires=[
-        "alibabacloud-sls20201230>=3.0.0",
-        "alibabacloud-tea-openapi>=0.3.0",
+        "alibabacloud-sls20201230>=5.12.0",
     ],
 )
