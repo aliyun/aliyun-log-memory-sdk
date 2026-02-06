@@ -749,7 +749,7 @@ class AsyncSLSMemoryClient:
             metadata=metadata,
             infer=infer,
             custom_instructions=custom_instructions,
-            asyn_mode=async_mode,
+            async_mode=async_mode,
         )
 
         response = await self._client.add_memories_async(
